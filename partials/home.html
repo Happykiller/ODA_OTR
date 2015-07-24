@@ -1,0 +1,74 @@
+<div class="container">
+    <h2 oda-label="home.title"></h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <span oda-label="home.hello"></span>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+            <button onclick="$.Oda.App.Controler.Home.config();" class="btn btn-default" oda-label="home.calculate"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>home.calculate</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="listItem">
+            <oda-loading></oda-loading>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" style="text-align:center;">
+            <button onclick="$.Oda.App.Controler.Home.addItem();" class="btn btn-primary" oda-label="home.addItem"><span class="glyphicon glyphicon-add" aria-hidden="true"></span>home.addItem</button>
+        </div>
+        <div class="col-md-4" style="text-align:center;">
+            <button onclick="$.Oda.App.Controler.Home.clean();" class="btn btn-warning" oda-label="home.clear"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>home.clear</button>
+        </div>
+        <div class="col-md-4" style="text-align:center;">
+            <button onclick="$.Oda.App.Controler.Home.calculate();" class="btn btn-success" oda-label="home.calculate"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>home.calculate</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.Oda.App.Controler.Home.start();
+</script>
+
+<script id="edit-addItem" type="text/template">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="name" oda-label="home.name">name</label>
+                <input type="text" class="form-control" oda-input-text="name" oda-input-text-tips="home.name-tips"
+                       oda-input-text-placeholder="home.name-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="nb" oda-label="home.nb">nb</label>
+                <input type="number" class="form-control" oda-input-text="nb" oda-input-text-tips="home.nb-tips" value="1"
+                       oda-input-text-placeholder="home.nb-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="price" oda-label="home.price">price</label>
+                <input type="number" step="0.01" class="form-control" oda-input-text="price" oda-input-text-tips="home.price-tips"
+                       oda-input-text-placeholder="home.price-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="tr" oda-label="home.tr">tr</label><br>
+                <input type="checkbox" id="tr">
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="edit-Configure" type="text/template">
+
+</script>
+
+<script id="edit-calculate" type="text/template">
+
+</script>

@@ -1,0 +1,31 @@
+[
+    {
+        "groupName" : "home"
+        , "fr" : {
+            "title" : "Accueil",
+            "hello" : "Bonjour avec le FrameWork Oda",
+            "article" : "Article",
+            "price" : "Prix",
+            "actions" : "Actions",
+            "addItem" : "Ajouter un article",
+            "clear" : "Vider la liste",
+            "calculate" : "Calculer les paniers",
+            "name" : "Nom",
+            "nb" : "Quantité",
+            "tr" : "Compatible ticket restaurant"
+        }
+        , "en" : {
+            "title" : "Home",
+            "hello" : "Hello with Oda FrameWork",
+            "article" : "Article",
+            "price" : "Price",
+            "actions" : "Actions",
+            "addItem" : "Add item",
+            "clear" : "Clean list",
+            "calculate" : "Calculate basket",
+            "name" : "Name",
+            "nb" : "Quantity",
+            "tr" : "Restaurant ticket compatibly"
+        }
+    }
+]
