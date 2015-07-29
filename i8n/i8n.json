@@ -12,7 +12,10 @@
             "calculate" : "Calculer les paniers",
             "name" : "Nom",
             "nb" : "Quantité",
-            "tr" : "Compatible ticket restaurant"
+            "tr" : "Compatible ticket restaurant",
+            "config" : "Configurer le panier",
+            "value" : "Valeur",
+            "shop" : "Magasin"
         }
         , "en" : {
             "title" : "Home",
@@ -25,7 +28,10 @@
             "calculate" : "Calculate basket",
             "name" : "Name",
             "nb" : "Quantity",
-            "tr" : "Restaurant ticket compatibly"
+            "tr" : "Restaurant ticket compatibly",
+            "config" : "Configure basket",
+            "value" : "Value",
+            "shop" : "Shop"
         }
     }
 ]

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Happykiller/ODA_FW_SERVER.git",
-                "reference": "f813c4cdb969ee5744fbdf40420a31d28f9a072f"
+                "reference": "cf800c7d1155bbabd6b1cb68f1cafdd8528586f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Happykiller/ODA_FW_SERVER/zipball/f813c4cdb969ee5744fbdf40420a31d28f9a072f",
-                "reference": "f813c4cdb969ee5744fbdf40420a31d28f9a072f",
+                "url": "https://api.github.com/repos/Happykiller/ODA_FW_SERVER/zipball/cf800c7d1155bbabd6b1cb68f1cafdd8528586f1",
+                "reference": "cf800c7d1155bbabd6b1cb68f1cafdd8528586f1",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
             "keywords": [
                 "oda"
             ],
-            "time": "2015-07-24 12:09:22"
+            "time": "2015-07-27 15:28:20"
         }
     ],
     "packages-dev": [],

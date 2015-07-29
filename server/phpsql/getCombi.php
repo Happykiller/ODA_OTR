@@ -5,7 +5,7 @@ require '../header.php';
 require '../vendor/autoload.php';
 require '../include/config.php';
 
-use stdClass, \Oda\SimpleObject\OdaPrepareInterface, \Oda\SimpleObject\OdaPrepareReqSql, \Oda\OdaLibBd;
+use stdClass, \Oda\SimpleObject\OdaPrepareInterface, \Oda\SimpleObject\OdaPrepareReqSql, \Oda\SimpleObject\OdaRetourReqSql, \Oda\OdaLibBd;
 
 //--------------------------------------------------------------------------
 //Build the interface
@@ -34,7 +34,7 @@ $listeId = explode(",", $INTERFACE->inputs["listeId"]);
 
 $SizeListeId = count($listeId);
 
-$resultats = new \Oda\OdaRetourReqSql();
+$resultats = new OdaRetourReqSql();
 
 if($result == "0"){
 
