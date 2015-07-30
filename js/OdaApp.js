@@ -497,21 +497,22 @@
                 },
                 /**
                  * @param {Integer} id
+                 * @param p_params.id
                  * @returns {$.Oda.App.Controler.Home.add}
                  */
-                add : function (p_id) {
+                add : function (p_params) {
                     try {
                         var name = "";
                         var nb = 1;
                         var price = 0;
                         var tr = 0;
-                        if($.Oda.Tooling.isUndefined(p_id)){
+                        if($.Oda.Tooling.isUndefined(p_params)){
                             name = $("#name").val();
                             nb = parseInt($("#nb").val());
                             price = parseFloat($("#price").val()).toFixed(2);
                             tr = ($("#tr").prop('checked'))?1:0
                         }else{
-                            var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_id+"';";
+                            var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
                             var tabInput = { sql : sql };
                             var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {}, tabInput);
                             var article = returnSql.data.resultat.data[0];
@@ -529,7 +530,7 @@
                         }
                         var tabInput = { sql : sql };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){
-                            $.Oda.Display.Popup.close();
+                            $.Oda.Display.Popup.closeAll();
                             $.Oda.App.Controler.Home.start();
                         }}, tabInput);
 
@@ -610,7 +611,7 @@
                         var sql = "REPLACE `tab_ort_panier_cible` (`code_user`, `nbTicket`, `valeurTicket`, `id_mag`) VALUES ('"+$.Oda.Session.code_user+"', '"+nb+"', '"+value+"', '"+shop+"');";
                         var tabInput = { sql : sql };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){
-                            $.Oda.Display.Popup.close();
+                            $.Oda.Display.Popup.closeAll();
                             $.Oda.App.Controler.Home.basketConfig.nbTicket = nb;
                             $.Oda.App.Controler.Home.basketConfig.valeurTicket = value;
                             $.Oda.App.Controler.Home.basketConfig.valeurPanierType = value * nb;
@@ -648,6 +649,86 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.Home.calculate : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.Home.search}
+                 */
+                search : function (p_params) {
+                    try {
+                        var details = $.Oda.Display.TemplateHtml.create({
+                            template : "search-template",
+                            scope : {
+                            }
+                        });
+
+                        $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'search'), "details" : details});
+
+                        var tabInput = { id_mag : $.Oda.App.Controler.Home.basketConfig.mag };
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/getArticleFromMag.php", {functionRetour : function(data){
+                            var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(data.data.resultat.data);
+
+                            var strhtml = '<table class="display hover" cellspacing="0" width="100%" id="tableSearch"></table>';
+                            $('#divTableSearch').html(strhtml);
+
+                            var oTable = $('#tableSearch').dataTable( {
+                                "language": {
+                                    "lengthMenu": $.Oda.I8n.get("oda-datatables","lengthMenu"),
+                                    "search": $.Oda.I8n.get("oda-datatables","search"),
+                                    "info": $.Oda.I8n.get("oda-datatables","info"),
+                                    "paginate": {
+                                        "first" : $.Oda.I8n.get("oda-datatables","first"),
+                                        "last" : $.Oda.I8n.get("oda-datatables","last"),
+                                        "next" : $.Oda.I8n.get("oda-datatables","next"),
+                                        "previous" : $.Oda.I8n.get("oda-datatables","previous")
+                                    }
+                                },
+                                "aaData": objDataTable.data,
+                                "aoColumns": [
+                                    { sTitle: $.Oda.I8n.get("home","article")  },
+                                    { sTitle: $.Oda.I8n.get("home","price"), sClass: "dataTableColCenter"  },
+                                    { sTitle: $.Oda.I8n.get("home","actions"), sClass: "dataTableColCenter"  }
+                                ],
+                                aoColumnDefs: [
+                                    {
+                                        mRender: function ( data, type, row ) {
+                                            var tr = (row[objDataTable.entete["tr"]] === "1")?"*":"";
+                                            var strHtml = row[objDataTable.entete["libelle"]]+tr;
+                                            return strHtml;
+                                        },
+                                        aTargets: [ 0 ]
+                                    },
+                                    {
+                                        mRender: function ( data, type, row ) {
+                                            var strHtml = row[objDataTable.entete["prix"]]+"&euro;";
+                                            return strHtml;
+                                        },
+                                        aTargets: [ 1 ]
+                                    },
+                                    {
+                                        mRender: function ( data, type, row ) {
+                                            var strHtml = '<button onclick="$.Oda.App.Controler.Home.add({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>';
+                                            //TODO
+                                            strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.Home.edit({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>';
+                                            return strHtml;
+                                        },
+                                        aTargets: [ 2 ]
+                                    }
+                                ],
+                                "fnDrawCallback": function( oSettings ) {
+                                    $('#tableSearch')
+                                        .removeClass( 'display' )
+                                        .addClass('table table-striped table-bordered');
+                                }
+                            });
+                        }}, tabInput);
+
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.Home.search : " + er.message);
                         return null;
                     }
                 },

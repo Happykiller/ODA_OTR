@@ -15,7 +15,8 @@
             "tr" : "Compatible ticket restaurant",
             "config" : "Configurer le panier",
             "value" : "Valeur",
-            "shop" : "Magasin"
+            "shop" : "Magasin",
+            "search" : "Choisir un article existant"
         }
         , "en" : {
             "title" : "Home",
@@ -31,7 +32,8 @@
             "tr" : "Restaurant ticket compatibly",
             "config" : "Configure basket",
             "value" : "Value",
-            "shop" : "Shop"
+            "shop" : "Shop",
+            "search" : "Choose an exist article"
         }
     }
 ]
