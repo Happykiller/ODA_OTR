@@ -487,21 +487,25 @@
 
                         $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'addItem'), "details" : details, "footer" : footer});
 
-                        $.Oda.Scope.refresh = function(){
-                            if((parseFloat($("#nb").val()) + $.Oda.App.Controler.Home.currentNbArticle) > $.Oda.App.Controler.Home.maxArticle){
-                                $.Oda.Display.Notification.warning("Trop d'article max : "+$.Oda.App.Controler.Home.maxArticle);
-                                $("#nb").data("isOk", false);
-                                $("#nb").css("border-color","#FF0000");
-                            }
+                        $.Oda.Scope.Gardian.add({
+                            id : "gardianAddItem",
+                            listElt : ["name", "nb", "price","tr"],
+                            function : function(params){
+                                if((parseFloat($("#nb").val()) + $.Oda.App.Controler.Home.currentNbArticle) > $.Oda.App.Controler.Home.maxArticle){
+                                    $.Oda.Display.Notification.warning("Trop d'article max : "+$.Oda.App.Controler.Home.maxArticle);
+                                    $("#nb").data("isOk", false);
+                                    $("#nb").css("border-color","#FF0000");
+                                }
 
-                            if(($("#name").data("isOk")) && ($("#nb").data("isOk")) && ($("#price").data("isOk"))){
-                                $("#submit").removeClass("disabled");
-                                $("#submit").removeAttr("disabled");
-                            }else {
-                                $("#submit").addClass("disabled");
-                                $("#submit").attr("disabled", true);
+                                if(($("#name").data("isOk")) && ($("#nb").data("isOk")) && ($("#price").data("isOk"))){
+                                    $("#submit").removeClass("disabled");
+                                    $("#submit").removeAttr("disabled");
+                                }else {
+                                    $("#submit").addClass("disabled");
+                                    $("#submit").attr("disabled", true);
+                                }
                             }
-                        };
+                        });
 
                         return this;
                     } catch (er) {
@@ -582,7 +586,7 @@
                  */
                 config : function (p_params) {
                     try {
-                        var footer = '<button oda-submit="submit" class="btn btn-info disabled" disabled onclick="$.Oda.App.Controler.Home.saveConfig();" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
+                        var footer = '<button oda-submit="cfg-submit" class="btn btn-info disabled" disabled onclick="$.Oda.App.Controler.Home.saveConfig();" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
 
                         var strShops = '<option value="1" selected>1</option><option value="2">2</option>';
 
@@ -597,15 +601,19 @@
 
                         $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'config'), "details" : details, "footer" : footer});
 
-                        $.Oda.Scope.refresh = function(){
-                            if(($("#nb").data("isOk")) && ($("#value").data("isOk")) && ($("#shop").data("isOk"))){
-                                $("#submit").removeClass("disabled");
-                                $("#submit").removeAttr("disabled");
-                            }else{
-                                $("#submit").addClass("disabled");
-                                $("#submit").attr("disabled", true);
+                        $.Oda.Scope.Gardian.add({
+                            id : "gardianConfig",
+                            listElt : ["cfg-nb", "cfg-value", "cfg-shop"],
+                            function : function(params){
+                                if(($("#cfg-nb").data("isOk")) && ($("#cfg-value").data("isOk")) && ($("#cfg-shop").data("isOk"))){
+                                    $("#cfg-submit").removeClass("disabled");
+                                    $("#cfg-submit").removeAttr("disabled");
+                                }else{
+                                    $("#cfg-submit").addClass("disabled");
+                                    $("#cfg-submit").attr("disabled", true);
+                                }
                             }
-                        };
+                        });
 
                         return this;
                     } catch (er) {
@@ -756,7 +764,7 @@
                         var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
                         var tabInput = { sql : sql };
                         var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
-                            var footer = '<button oda-submit="submit" class="btn btn-info" onclick="$.Oda.App.Controler.Home.saveEdit({id:'+data.data.resultat.data[0].id+'});" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
+                            var footer = '<button oda-submit="editArticle-submit" class="btn btn-info disabled" disabled onclick="$.Oda.App.Controler.Home.saveEdit({id:'+data.data.resultat.data[0].id+'});" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
 
                             var details = $.Oda.Display.TemplateHtml.create({
                                 template : "edit-item",
@@ -769,6 +777,21 @@
                             });
 
                             $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'edit'), "details" : details, "footer" : footer});
+
+                            $.Oda.Scope.Gardian.add({
+                                id : "gardianEdit",
+                                listElt : ["editName", "editPrice"],
+                                function : function(params){
+                                    if(($("#editName").data("isOk")) && ($("#editPrice").data("isOk"))){
+                                        $("#editArticle-submit").removeClass("disabled");
+                                        $("#editArticle-submit").removeAttr("disabled");
+                                    }else{
+                                        $("#editArticle-submit").addClass("disabled");
+                                        $("#editArticle-submit").attr("disabled", true);
+                                    }
+                                }
+                            });
+
                         }}, tabInput);
                         return this;
                     } catch (er) {

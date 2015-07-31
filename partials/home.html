@@ -79,22 +79,22 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="nb" oda-label="home.nb">nb</label>
-                <input value="{{nb}}" type="number" type="text" class="form-control" oda-input-text="nb" oda-input-text-tips="home.nb-tips"
+                <label for="cfg-nb" oda-label="home.nb">nb</label>
+                <input value="{{nb}}" type="number" type="text" class="form-control" oda-input-text="cfg-nb" oda-input-text-tips="home.nb-tips"
                        oda-input-text-placeholder="home.nb-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="value" oda-label="home.value">value</label>
-                <input value="{{value}}" type="number" step="0.01" class="form-control" oda-input-text="value" oda-input-text-tips="home.value-tips"
+                <label for="cfg-value" oda-label="home.value">value</label>
+                <input value="{{value}}" type="number" step="0.01" class="form-control" oda-input-text="cfg-value" oda-input-text-tips="home.value-tips"
                        oda-input-text-placeholder="home.value-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="shop" oda-label="home.shop">magasin</label>
-                <select class="form-control" oda-input-select="shop" required>
+                <label for="cfg-shop" oda-label="home.shop">magasin</label>
+                <select class="form-control" oda-input-select="cfg-shop" required>
                         <option value="" oda-label="oda-main.select-default"></option>
                         <option value="1" {{(shop==='1')?'selected':''}}>Picard</option>
                 </select>
