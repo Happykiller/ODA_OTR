@@ -16,7 +16,7 @@
     </div>
     <div class="row">
         <div class="col-md-4" style="text-align:center;">
-            <button onclick="$.Oda.App.Controler.Home.addItem();" class="btn btn-primary" oda-label="home.addItem"><span class="glyphicon glyphicon-add" aria-hidden="true"></span>home.addItem</button>
+            <button onclick="$.Oda.App.Controler.Home.addItem();" class="btn btn-primary" oda-label="home.addItem" id="bt-add"><span class="glyphicon glyphicon-add" aria-hidden="true"></span>home.addItem</button>
         </div>
         <div class="col-md-4" style="text-align:center;">
             <button onclick="$.Oda.App.Controler.Home.clean();" class="btn btn-warning" oda-label="home.clear"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>home.clear</button>
@@ -119,6 +119,33 @@
     <div class="row">
         <div class="col-md-12" id="divTableSearch">
             <oda-loading></oda-loading>
+        </div>
+    </div>
+</script>
+
+<script id="edit-item" type="text/template">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="editName" oda-label="home.name">name</label>
+                <input value="{{libelle}}" type="text" class="form-control" oda-input-text="editName" oda-input-text-tips="home.name-tips"
+                       oda-input-text-placeholder="home.name-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="editPrice" oda-label="home.price">price</label>
+                <input value="{{prix}}" type="number" step="0.01" class="form-control" oda-input-text="editPrice" oda-input-text-tips="home.price-tips"
+                       oda-input-text-placeholder="home.price-placeholder" oda-input-text-check="Oda.Regexs:noInjection" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="editTr" oda-label="home.tr">tr</label><br>
+                <input {{(tr==="1")?"checked":""}} type="checkbox" id="editTr">
+            </div>
         </div>
     </div>
 </script>

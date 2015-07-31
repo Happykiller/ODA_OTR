@@ -16,7 +16,8 @@
             "config" : "Configurer le panier",
             "value" : "Valeur",
             "shop" : "Magasin",
-            "search" : "Choisir un article existant"
+            "search" : "Choisir un article existant",
+            "edit" : "Editer"
         }
         , "en" : {
             "title" : "Home",
@@ -33,7 +34,8 @@
             "config" : "Configure basket",
             "value" : "Value",
             "shop" : "Shop",
-            "search" : "Choose an exist article"
+            "search" : "Choose an exist article",
+            "edit" : "Edit"
         }
     }
 ]

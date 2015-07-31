@@ -63,6 +63,8 @@
                     magName : "Picard",
                     nbTicket : 2
                 },
+                maxArticle : 17,
+                currentNbArticle : 0,
                 worker : null,
                 /**
                  * @param {Object} p_params
@@ -74,7 +76,15 @@
                         var sql = "SELECT id, obj_label, obj_prix, obj_tr FROM `tab_ort` WHERE 1=1 AND `code_user` = '"+$.Oda.Session.code_user+"';";
                         var tabInput = { sql : sql };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
-                            //TODO disable add if max
+                            $.Oda.App.Controler.Home.currentNbArticle = data.data.resultat.nombre;
+                            if(data.data.resultat.nombre > $.Oda.App.Controler.Home.maxArticle){
+                                $("#bt-add").addClass("disabled");
+                                $("#bt-add").attr("disabled", true);
+                            }else {
+                                $("#bt-add").removeClass("disabled");
+                                $("#bt-add").removeAttr("disabled");
+                            }
+
                             var objDataTable = $.Oda.Tooling.objDataTableFromJsonArray(data.data.resultat.data);
 
                             var strhtml = '<table cellpadding="0" cellspacing="0" border="0" class="display hover" id="tableRecords"></table>';
@@ -117,8 +127,6 @@
                                     {
                                         mRender: function ( data, type, row ) {
                                             var strHtml = '<button onclick="$.Oda.App.Controler.Home.remove({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
-                                            //TODO
-                                            strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.Home.edit({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>';
                                             return strHtml;
                                         },
                                         aTargets: [ 2 ]
@@ -144,6 +152,7 @@
                             }else{
                                 $.Oda.App.Controler.Home.basketConfig.nbTicket = parseInt(retours[0]["nbTicket"]);
                                 $.Oda.App.Controler.Home.basketConfig.valeurTicket = parseFloat(retours[0]["valeurTicket"]).toFixed(2);
+                                $.Oda.App.Controler.Home.basketConfig.valeurPanierType = $.Oda.App.Controler.Home.basketConfig.nbTicket * $.Oda.App.Controler.Home.basketConfig.valeurTicket;
                                 $.Oda.App.Controler.Home.basketConfig.magName = retours[0]["nom"];
                                 $.Oda.App.Controler.Home.basketConfig.mag = retours[0]["id_mag"];
                             }
@@ -470,7 +479,6 @@
                  */
                 addItem : function (p_params) {
                     try {
-                        //TODO check $.Oda.App.Controler.Home.nb + nb < max
                         var footer = '<button oda-submit="submit" class="btn btn-info disabled" disabled onclick="$.Oda.App.Controler.Home.add();" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
 
                         var details = $.Oda.Display.TemplateHtml.create({
@@ -480,6 +488,12 @@
                         $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'addItem'), "details" : details, "footer" : footer});
 
                         $.Oda.Scope.refresh = function(){
+                            if((parseFloat($("#nb").val()) + $.Oda.App.Controler.Home.currentNbArticle) > $.Oda.App.Controler.Home.maxArticle){
+                                $.Oda.Display.Notification.warning("Trop d'article max : "+$.Oda.App.Controler.Home.maxArticle);
+                                $("#nb").data("isOk", false);
+                                $("#nb").css("border-color","#FF0000");
+                            }
+
                             if(($("#name").data("isOk")) && ($("#nb").data("isOk")) && ($("#price").data("isOk"))){
                                 $("#submit").removeClass("disabled");
                                 $("#submit").removeAttr("disabled");
@@ -506,17 +520,19 @@
                         var nb = 1;
                         var price = 0;
                         var tr = 0;
+                        var id = 0;
                         if($.Oda.Tooling.isUndefined(p_params)){
                             name = $("#name").val();
                             nb = parseInt($("#nb").val());
                             price = parseFloat($("#price").val()).toFixed(2);
-                            tr = ($("#tr").prop('checked'))?1:0
+                            tr = ($("#tr").prop('checked'))?1:0;
                         }else{
                             var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
                             var tabInput = { sql : sql };
                             var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {}, tabInput);
                             var article = returnSql.data.resultat.data[0];
 
+                            id = article.id;
                             name = article.libelle;
                             nb = 1;
                             price = parseFloat(article.prix).toFixed(2);
@@ -526,7 +542,7 @@
                         var sql = "INSERT INTO `tab_ort` (`code_user` ,`date_saisie` ,`obj_code` ,`obj_label` ,`obj_prix`, `obj_tr`) VALUES ";
                         for(var i = 0; i < nb; i++) {
                             var sep = (i !== 0)?",":"";
-                            sql += sep + " ('" + $.Oda.Session.code_user + "', CURRENT_TIMESTAMP , '', '" + name + "', '" + price + "', '" + tr + "')";
+                            sql += sep + " ('" + $.Oda.Session.code_user + "', CURRENT_TIMESTAMP , "+id+", '" + name + "', '" + price + "', '" + tr + "')";
                         }
                         var tabInput = { sql : sql };
                         var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){
@@ -653,11 +669,9 @@
                     }
                 },
                 /**
-                 * @param {Object} p_params
-                 * @param p_params.id
                  * @returns {$.Oda.App.Controler.Home.search}
                  */
-                search : function (p_params) {
+                search : function () {
                     try {
                         var details = $.Oda.Display.TemplateHtml.create({
                             template : "search-template",
@@ -711,7 +725,6 @@
                                     {
                                         mRender: function ( data, type, row ) {
                                             var strHtml = '<button onclick="$.Oda.App.Controler.Home.add({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>';
-                                            //TODO
                                             strHtml += '&nbsp;<button onclick="$.Oda.App.Controler.Home.edit({id:' + row[objDataTable.entete["id"]] + '})" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>';
                                             return strHtml;
                                         },
@@ -729,6 +742,59 @@
                         return this;
                     } catch (er) {
                         $.Oda.Log.error("$.Oda.App.Controler.Home.search : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.Home.edit}
+                 */
+                edit : function (p_params) {
+                    try {
+
+                        var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
+                        var tabInput = { sql : sql };
+                        var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
+                            var footer = '<button oda-submit="submit" class="btn btn-info" onclick="$.Oda.App.Controler.Home.saveEdit({id:'+data.data.resultat.data[0].id+'});" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
+
+                            var details = $.Oda.Display.TemplateHtml.create({
+                                template : "edit-item",
+                                scope : {
+                                    id : data.data.resultat.data[0].id,
+                                    libelle : data.data.resultat.data[0].libelle,
+                                    prix : data.data.resultat.data[0].prix,
+                                    tr : data.data.resultat.data[0].tr
+                                }
+                            });
+
+                            $.Oda.Display.Popup.open({"label" : $.Oda.I8n.get('home', 'edit'), "details" : details, "footer" : footer});
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.Home.edit : " + er.message);
+                        return null;
+                    }
+                },
+                /**
+                 * @param {Object} p_params
+                 * @param p_params.id
+                 * @returns {$.Oda.App.Controler.Home}
+                 */
+                saveEdit : function (p_params) {
+                    try {
+                        var tabInput = {
+                            id : p_params.id,
+                            label : $("#editName").val(),
+                            price : parseFloat($("#editPrice").val()).toFixed(2),
+                            tr : ($("#editTr").prop('checked'))?1:0
+                        };
+                        var return_json = $.Oda.Interface.callRest($.Oda.Context.rest+"phpsql/updateArticle.php", {functionRetour : function(data){
+                            $.Oda.Display.Popup.closeAll();
+                        }}, tabInput);
+                        return this;
+                    } catch (er) {
+                        $.Oda.Log.error("$.Oda.App.Controler.Home.saveEdit : " + er.message);
                         return null;
                     }
                 },
