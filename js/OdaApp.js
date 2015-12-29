@@ -75,7 +75,7 @@
                     try {
                         var sql = "SELECT id, obj_label, obj_prix, obj_tr FROM `tab_ort` WHERE 1=1 AND `code_user` = '"+$.Oda.Session.code_user+"';";
                         var tabInput = { sql : sql };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {functionRetour : function(data){
                             $.Oda.App.Controler.Home.currentNbArticle = data.data.resultat.nombre;
                             if(data.data.resultat.nombre > $.Oda.App.Controler.Home.maxArticle){
                                 $("#bt-add").addClass("disabled");
@@ -102,6 +102,7 @@
                                         "previous" : $.Oda.I8n.get("oda-datatables","previous")
                                     }
                                 },
+                                "pageLength": 50,
                                 "aaData": objDataTable.data,
                                 "aoColumns": [
                                     { sTitle: $.Oda.I8n.get("home","article")  },
@@ -142,13 +143,13 @@
 
                         var sql = "SELECT nbTicket, valeurTicket, nom, id_mag FROM `tab_ort_panier_cible` a, `tab_ort_mags` b WHERE 1=1 AND a.id_mag = b.id AND `code_user` = '"+$.Oda.Session.code_user+"';";
                         var tabInput = { sql : sql };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {functionRetour : function(data){
                             var retours = data.data.resultat.data;
 
                             if(data.data.resultat.nombre === "0"){
                                 var strSQL = "REPLACE `tab_ort_panier_cible` (`code_user` ,`nbTicket` ,`valeurTicket`, `id_mag`) VALUES ('"+$.Oda.Sesssion.code_user+"', 2,  8, 0);";
                                 var tabInput = { sql : sql };
-                                var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){}},tabInput);
+                                var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/insertSQL.php", {functionRetour : function(data){}},tabInput);
                             }else{
                                 $.Oda.App.Controler.Home.basketConfig.nbTicket = parseInt(retours[0]["nbTicket"]);
                                 $.Oda.App.Controler.Home.basketConfig.valeurTicket = parseFloat(retours[0]["valeurTicket"]).toFixed(2);
@@ -185,7 +186,7 @@
 
                                             var sql = "SELECT id, obj_label, obj_prix, obj_tr FROM `tab_ort` WHERE 1=1 AND `code_user` = '"+p_code_user+"';";
                                             var tabInput = { sql : sql };
-                                            var return_json = $Oda.callRest($Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {}, tabInput);
+                                            var return_json = $Oda.callRest($Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {}, tabInput);
 
                                             var returnSql = return_json.data.resultat.data;
 
@@ -366,7 +367,7 @@
 
                                             var sql = "SELECT id, libelle, prix FROM `tab_ort_inventaire` WHERE 1=1 AND TR = 1 AND id_mag = "+p_mag+" ORDER BY prix asc LIMIT 0 , 5";
                                             var tabInput = { sql : sql };
-                                            var return_json = $Oda.callRest($Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {}, tabInput);
+                                            var return_json = $Oda.callRest($Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {}, tabInput);
                                             var returnSql = return_json["data"]["resultat"]["data"];
 
                                             nbPanier += 1;
@@ -462,7 +463,7 @@
                     try {
                         var strSQL = "DELETE FROM `tab_ort` WHERE 1=1 AND `code_user` = '"+$.Oda.Session.code_user+"' AND id="+p_params.id+";";
                         var tabInput = { sql : strSQL };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/deleteSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/deleteSQL.php", {functionRetour : function(data){
                             $.Oda.App.Controler.Home.start();
                         }}, tabInput);
 
@@ -533,7 +534,7 @@
                         }else{
                             var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
                             var tabInput = { sql : sql };
-                            var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {}, tabInput);
+                            var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {}, tabInput);
                             var article = returnSql.data.resultat.data[0];
 
                             id = article.id;
@@ -549,7 +550,7 @@
                             sql += sep + " ('" + $.Oda.Session.code_user + "', CURRENT_TIMESTAMP , "+id+", '" + name + "', '" + price + "', '" + tr + "')";
                         }
                         var tabInput = { sql : sql };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/insertSQL.php", {functionRetour : function(data){
                             $.Oda.Display.Popup.closeAll();
                             $.Oda.App.Controler.Home.start();
                         }}, tabInput);
@@ -569,7 +570,7 @@
                     try {
                         var strSQL = "DELETE FROM `tab_ort` WHERE 1=1 AND `code_user` = '"+$.Oda.Session.code_user+"';";
                         var tabInput = { sql : strSQL };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/deleteSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/deleteSQL.php", {functionRetour : function(data){
                             $.Oda.App.Controler.Home.start();
                         }}, tabInput);
 
@@ -634,7 +635,7 @@
 
                         var sql = "REPLACE `tab_ort_panier_cible` (`code_user`, `nbTicket`, `valeurTicket`, `id_mag`) VALUES ('"+$.Oda.Session.code_user+"', '"+nb+"', '"+value+"', '"+shop+"');";
                         var tabInput = { sql : sql };
-                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/insertSQL.php", {functionRetour : function(data){
+                        var call = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/insertSQL.php", {functionRetour : function(data){
                             $.Oda.Display.Popup.closeAll();
                             $.Oda.App.Controler.Home.basketConfig.nbTicket = nb;
                             $.Oda.App.Controler.Home.basketConfig.valeurTicket = value;
@@ -763,7 +764,7 @@
 
                         var sql = "SELECT id, libelle, prix, tr FROM `tab_ort_inventaire` WHERE 1=1 AND `id` = '"+p_params.id+"';";
                         var tabInput = { sql : sql };
-                        var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/phpsql/getSQL.php", {functionRetour : function(data){
+                        var returnSql = $.Oda.Interface.callRest($.Oda.Context.rest+"vendor/happykiller/oda/resources/api/getSQL.php", {functionRetour : function(data){
                             var footer = '<button oda-submit="editArticle-submit" class="btn btn-info disabled" disabled onclick="$.Oda.App.Controler.Home.saveEdit({id:'+data.data.resultat.data[0].id+'});" oda-label="oda-main.bt-submit">oda-main.bt-submit</button>';
 
                             var details = $.Oda.Display.TemplateHtml.create({
